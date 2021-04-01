@@ -37,7 +37,6 @@ my_tree.heading("Year", text="Year", anchor=CENTER)
 ### Functions
 #  load db and add data to treeview
 def filltree(searchlimiter=""):
-    print("hello")
     my_tree.delete(*my_tree.get_children())
     with open('sisdb.csv', 'r') as csv_file:
         csv_reader = csv.reader(csv_file)
@@ -46,11 +45,12 @@ def filltree(searchlimiter=""):
             if searchlimiter == "":
                 my_tree.insert(parent='', index='end', iid=iid, text="", values=(line[0], line[1], line[2], line[3]))
             else:
-                ratio = SequenceMatcher(None, searchlimiter, str(line[0])).ratio()
-                if len(str(line[0])) >= len(searchlimiter):
-                    score = float(len(searchlimiter)) / float(len(str(line[0])))
-                    if ratio>=score:
-                        my_tree.insert(parent='', index='end', iid=iid, text="", values=(line[0], line[1], line[2], line[3]))
+                #ratio = SequenceMatcher(None, searchlimiter, str(line[0])).ratio()
+                #if len(str(line[0])) >= len(searchlimiter):
+                #    score = float(len(searchlimiter)) / float(len(str(line[0])))
+                    # if ratio>=score:
+                if searchlimiter in str(line[0]):
+                    my_tree.insert(parent='', index='end', iid=iid, text="", values=(line[0], line[1], line[2], line[3]))
 
             iid += 1
 
@@ -125,7 +125,11 @@ def editOrDeleteEntry(delete=FALSE):
         messagebox.showinfo(parent=window, title="ID Exists", message="Inputted ID is already in the system")
         return
     if delete:
-        data_screenshot[counter].pop()
+        result = messagebox.askquestion("Delete", "Are You Sure?", icon='warning')
+        if result == 'yes':
+            data_screenshot.pop(counter)
+        else:
+            return
     else:
         data_screenshot[counter] = [tb_id.get(), tb_name.get(), tb_course.get(), tb_year.get()]
     updatedb(data_screenshot)
@@ -134,6 +138,7 @@ def editOrDeleteEntry(delete=FALSE):
     tb_name.delete(0, END)
     tb_course.delete(0, END)
     tb_year.delete(0, END)
+    tb_search.delete(0, END)
 
 def addEntry(button):
     def on_close():

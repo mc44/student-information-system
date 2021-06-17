@@ -53,7 +53,7 @@ def coursescreen(coursebutton, tb_course):
                     if item == 1:
                         text += str(line[c])
                     c += 1
-                if searchlimiter in text:
+                if searchlimiter.lower() in text.lower():
                     course_tree.insert(parent='', index='end', iid=iid, text="", values=(line[0], line[1]))
             iid += 1
 
